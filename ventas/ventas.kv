@@ -1,0 +1,399 @@
+#:import hex kivy.utils.get_color_from_hex
+
+<BotonOscuro@Button>:
+	background_normal: ''
+	background_color: hex('#393939')
+
+<LabelOscuro@Label>:
+	canvas.before:
+		Color:
+			rgba: hex('#393939')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+
+<SelectableBoxLayout>:
+    # Draw a background to indicate selection
+    canvas.before:
+        Color:
+            rgba: hex('#C9F3EF') if self.selected else hex('#F0F0F0')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+    	id: _hashtag
+    	size_hint_x: .1
+    	color: (0,0,0,1)
+    Label:
+    	id: _articulo
+    	size_hint_x: .5
+    	color: (0,0,0,1)
+    Label:
+    	id: _cantidad
+    	size_hint_x: .1
+    	color: (0,0,0,1)
+    Label:
+    	id: _precio_por_articulo
+    	size_hint_x: .15
+    	color: (0,0,0,1)
+    Label:
+    	id: _precio
+    	size_hint_x: .15
+    	color: (0,0,0,1)
+
+<SelectableBoxLayoutPopup>:
+	canvas.before:
+		Color:
+			rgba: hex('#7A9B87') if self.selected else hex('#393939')   
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	Label:
+		id: _codigo    	
+		size_hint_x: .25
+    Label:
+		id: _articulo
+        size_hint_x: .5
+    Label:
+		id: _cantidad
+        size_hint_x: .1
+    Label:
+		id: _precio
+        size_hint_x: .15
+
+
+<RV>:
+    SelectableRecycleBoxLayout:
+        default_size: None, dp(36)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
+        orientation: 'vertical'
+        multiselect: False
+        touch_multiselect: False
+
+<ProductoPorNombrePopup>:
+	size_hint: .5, .55
+	title: 'Productos'
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			size_hint_y: .8
+			orientation: 'vertical'
+			BoxLayout:
+				size_hint_y: .1
+				Label:
+	    			text: '编号'
+			    	size_hint_x: .25
+			    	font_name: 'SimHei'
+			    Label:
+	    			text: '商品名称'
+	    			font_name: 'SimHei'
+			        size_hint_x: .5
+			    Label:
+	    			text: '数量'
+	    			font_name: 'SimHei'
+			        size_hint_x: .1
+			    Label:
+	    			text: '单价'
+	    			font_name: 'SimHei'
+			        size_hint_x: .15
+			RV:
+			    viewclass: 'SelectableBoxLayoutPopup'
+				id: rvs
+		BoxLayout:
+			size_hint_y: .2
+			Button: 
+				text: '选取'
+				font_name: 'SimHei'
+				on_release: root.seleccionar_articulo()
+			Button:
+				text: '退出'
+				font_name: 'SimHei'
+				on_release: root.dismiss()
+
+<CambiarCantidadPopup>:
+	size_hint: .5, .5
+	title: '更改数量'
+	font_name: 'SimHei'
+	auto_dismiss: False
+	BoxLayout:
+		orientation: 'vertical'
+		BoxLayout:
+			Label:
+				id: info_nueva_cant_1
+			Label:
+				id: info_nueva_cant_2
+		Label:
+			id: notificacion_no_valido
+		TextInput:
+			id: nueva_cant_texto
+			multiline: False
+			hint_text: '重新键入数量'
+			font_name: 'SimHei'
+		Button:
+			id: nueva_cant_boton
+			text: '确认'
+			font_name: 'SimHei'
+	    	on_release: root.validar_input(root.ids.nueva_cant_texto.text)
+		Button:
+			text: '放弃更改并退出'
+			font_name: 'SimHei'
+			on_release: root.dismiss()
+
+<PagarPopup>:
+	size_hint: .4, .5
+	title: '付款'
+	font_name: 'SimHei'
+	BoxLayout:
+		orientation: 'vertical'
+		spacing: .5
+		padding: .5
+		BoxLayout:
+			size_hint_y: .25
+			Label: 
+				size_hint_x: .5
+				text: '总金额: '
+				font_name: 'SimHei'
+			Label:
+				id: total
+				size_hint_x: .5
+		BoxLayout:
+			size_hint_y: .25
+			Label:
+				size_hint_x: .5
+				text: '收款: '
+				font_name: 'SimHei'
+			BoxLayout:
+				size_hint_x: .5
+				orientation: 'vertical'
+				TextInput:
+					id: recibido
+					hint_text: '已收款'
+					font_name: 'SimHei'
+					multiline: False
+					on_text_validate: root.mostrar_cambio()
+				Button:
+					text: '确认'
+					font_name: 'SimHei'
+					on_release: root.mostrar_cambio()
+		BoxLayout:
+			size_hint_y: .25
+			Label:
+				size_hint_x: .5
+				text: '找零: '
+				font_name: 'SimHei'
+			Label:
+				id: cambio
+				size_hint_x: .5
+		BoxLayout:
+			size_hint_y: .25
+			Button: 
+				id: boton_pagar
+				disabled: True
+				text: '完成支付'
+				font_name: 'SimHei'
+				on_release: root.pagado()
+			Button:
+				text: '取消'
+				font_name: 'SimHei'
+				on_release: root.dismiss()
+
+<NuevaCompraPopup>:
+	size_hint: .3, .3
+	title: '取消交易'
+	font_name: 'SimHei'
+	BoxLayout:
+		orientation: 'vertical'
+		Label: 
+			text: '继续收银?'
+			font_name: 'SimHei'
+		BoxLayout:
+			Button: 
+				id: aceptar
+				text: '是'
+				font_name: 'SimHei'
+				on_release: root.nueva_compra(True)
+			Button:
+				text: '否'
+				font_name: 'SimHei'
+				on_release: root.dismiss()
+
+<VentasWindow>:
+	canvas.before:
+		Color:
+			rgba: hex('#24B0AE')
+		Rectangle:
+			size: self.size
+			pos: self.pos
+	orientation: 'vertical'
+	BoxLayout:
+		size_hint_y: .1
+		spacing: .5
+		Label:
+			id: bienvenido_label
+			size_hint_x: .25
+			text: '欢迎: '
+			font_name: 'SimHei'
+			color: hex('#000000')
+		GridLayout:
+			size_hint_x: .25
+			rows: 2
+			cols: 2
+			Label: 
+				text: '日期: '
+				color: hex('#000000')
+				font_name: 'SimHei'
+			Label: 
+				id: fecha
+				color: hex('#000000')
+			Label: 
+				text: '时间: '
+				color: hex('#000000')
+				font_name: 'SimHei'
+			Label: 
+				id: hora
+				color: hex('#000000')
+		Label: 
+			size_hint_x: .2
+		BotonOscuro:
+			id: admin_boton
+			size_hint_x: .15
+			text: '管理'
+			font_name: 'SimHei'
+			on_release: root.admin()
+		BotonOscuro: 
+			id: signout_boton
+			size_hint_x: .15
+			text: '退出登录'
+			font_name: 'SimHei'
+			on_release: root.signout()
+	BoxLayout:
+		canvas.before:
+			Color:
+				rgba: hex('#FFFFFF')
+			Rectangle:
+				size: self.size
+				pos: self.pos
+		size_hint_y: .87
+		spacing: .5
+		BoxLayout:
+			size_hint_x: .7
+			orientation: 'vertical'
+			spacing: .5
+			GridLayout:
+				spacing: .5
+				size_hint_y: .1
+				rows: 2
+				cols: 2
+				LabelOscuro:
+					text: '通过编号查找'
+					font_name: 'SimHei'
+				LabelOscuro:
+					text: '通过商品名称查找'
+					font_name: 'SimHei'
+				TextInput:
+					id: buscar_codigo
+					multiline: False
+					on_text_validate: root.agregar_producto_codigo(self.text)
+				TextInput:
+					id: buscar_nombre
+					multiline: False
+					on_text_validate: root.agregar_producto_nombre(self.text)
+
+			BoxLayout:
+				size_hint_y: .8
+				orientation: 'vertical'
+				BoxLayout:
+					size_hint_y: .05
+					spacing: .5
+					LabelOscuro:
+						text: '#'
+						size_hint_x: .1
+					LabelOscuro:
+						text: '商品'
+						font_name: 'SimHei'
+						size_hint_x: .5
+					LabelOscuro:
+						text: '数量'
+						font_name: 'SimHei'
+						size_hint_x: .1
+					LabelOscuro:
+						text: '单价'
+						font_name: 'SimHei'
+						size_hint_x: .15
+					LabelOscuro:
+						text: '小计'
+						font_name: 'SimHei'
+						size_hint_x: .15
+				RV:
+				    viewclass: 'SelectableBoxLayout'
+					id: rvs
+			BoxLayout:
+				size_hint_y: .1
+				spacing: .5
+				BotonOscuro:
+					text: '从列表中删除'
+					font_name: 'SimHei'
+					on_release: root.eliminar_producto()
+				BotonOscuro:
+					text: '更改数量'
+					font_name: 'SimHei'
+					on_release: root.modificar_producto()
+		BoxLayout:
+			size_hint_x: .3
+			orientation: 'vertical'
+			canvas.before:
+				Color:
+					rgba: hex('#BCD3D2')
+				Rectangle:
+					size: self.size
+					pos: self.pos
+			GridLayout:
+				canvas.before:
+					Color:
+						rgba: hex('#000000')
+					Rectangle:
+						size: self.size
+						pos: self.pos
+				size_hint_y: .4
+				rows: 2
+				cols: 2
+				Label:
+					text: '合计'
+					font_name: 'SimHei'
+				Label:
+					id: sub_total
+					text: '0.00'
+				Label: 
+					text: 'Total'
+					font_name: 'SimHei'
+				Label:
+					id: total
+					text: '0.00'
+			BoxLayout:
+				size_hint_y: .6
+				orientation: 'vertical'
+				spacing: .5
+				Label:
+					id: notificacion_falla
+					size_hint_y: .25
+					color: hex('#9B0303')
+				Label:
+					id: notificacion_exito
+					size_hint_y: .25
+					color: hex('#039B1E')
+				BotonOscuro:
+					size_hint_y: .25
+					id: pagar
+					text: '付款'
+					font_name: 'SimHei'
+					on_release: root.pagar()
+				BotonOscuro:
+					size_hint_y: .25
+					id: nueva_compra
+					text: '新交易'
+					font_name: 'SimHei'
+					on_release: root.nueva_compra()
+	BoxLayout:
+		size_hint_y: .03
