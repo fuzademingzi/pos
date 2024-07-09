@@ -20,6 +20,7 @@ class MainWindow(BoxLayout):
 
 class MainApp(App):
 	def build(self):
+		self.title = '海安™收银系统'
 		return MainWindow()
 
 if __name__=="__main__":

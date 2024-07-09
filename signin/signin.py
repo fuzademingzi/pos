@@ -20,7 +20,7 @@ class SigninWindow(BoxLayout):
         users = QueriesSQLite.execute_read_query(connection, "SELECT * from usuarios")
         if users:
             if username == '' or password == '':
-                self.ids.signin_notificacion.text = 'Falta nombre de usuario y/o contraseña'
+                self.ids.signin_notificacion.text = '缺少用户名或密码'
                 self.ids.signin_notificacion.font_name = 'SimHei'  # **设置字体**
             else:
                 usuario = {}
@@ -51,7 +51,7 @@ class SigninWindow(BoxLayout):
             usuario_tuple = ('usuario', 'Usuario Inicio', '123', 'admin')
             crear_usuario = "INSERT INTO usuarios (username, nombre, password, tipo) VALUES (?,?,?,?);"
             QueriesSQLite.execute_query(connection, crear_usuario, usuario_tuple)
-            self.ids.signin_notificacion.text = 'Se creó primer usuario. usuario 123'
+            self.ids.signin_notificacion.text = '已创建默认用户'
             self.ids.signin_notificacion.font_name = 'SimHei'  # **设置字体**
 
 class SigninApp(App):
