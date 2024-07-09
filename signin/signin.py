@@ -48,10 +48,10 @@ class SigninWindow(BoxLayout):
                     self.ids.signin_notificacion.text = '用户名或密码错误'
                     self.ids.signin_notificacion.font_name = 'SimHei'  # **设置字体**
         else:
-            usuario_tuple = ('usuario', 'Usuario Inicio', '123', 'admin')
+            usuario_tuple = ('admin', '默认用户', '4dm1n', 'admin')
             crear_usuario = "INSERT INTO usuarios (username, nombre, password, tipo) VALUES (?,?,?,?);"
             QueriesSQLite.execute_query(connection, crear_usuario, usuario_tuple)
-            self.ids.signin_notificacion.text = '已创建默认用户'
+            self.ids.signin_notificacion.text = '已创建默认用户 admin '
             self.ids.signin_notificacion.font_name = 'SimHei'  # **设置字体**
 
 class SigninApp(App):
