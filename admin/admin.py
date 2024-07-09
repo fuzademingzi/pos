@@ -202,7 +202,7 @@ class ProductoPopup(Popup):
         self.open()
 
     def verificar(self, producto_codigo, producto_nombre, producto_cantidad, producto_precio):
-        alert1='Falta: '
+        alert1='缺少: '
         alert2=''
         validado={}
         if not producto_codigo:
