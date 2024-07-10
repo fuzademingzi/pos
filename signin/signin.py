@@ -6,9 +6,13 @@ from kivy.core.text import LabelBase
 from sqlqueries import QueriesSQLite
 
 # **注册支持中文的字体**
-LabelBase.register(name='SimHei', fn_regular='SimHei.ttf')
+import os
+# Register the custom font
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+LabelBase.register(name='SimHei', fn_regular=os.path.join(parent_dir, 'fonts', 'SimHei.ttf'))
 
-Builder.load_file('signin/signin.kv')
+Builder.load_file(os.path.join(parent_dir,'signin', 'signin.kv'))
 
 class SigninWindow(BoxLayout):
     def __init__(self, poner_usuario_callback, **kwargs):
@@ -48,7 +52,7 @@ class SigninWindow(BoxLayout):
                     self.ids.signin_notificacion.text = '用户名或密码错误'
                     self.ids.signin_notificacion.font_name = 'SimHei'  # **设置字体**
         else:
-            usuario_tuple = ('admin', '默认用户', '4dm1n', 'admin')
+            usuario_tuple = ('admin', '默认用户', 'admin', 'admin')
             crear_usuario = "INSERT INTO usuarios (username, nombre, password, tipo) VALUES (?,?,?,?);"
             QueriesSQLite.execute_query(connection, crear_usuario, usuario_tuple)
             self.ids.signin_notificacion.text = '已创建默认用户 admin '

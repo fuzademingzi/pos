@@ -11,11 +11,13 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.core.text import LabelBase
-
+import os
 # Register the custom font
-LabelBase.register(name='SimHei', fn_regular='SimHei.ttf')
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+LabelBase.register(name='SimHei', fn_regular=os.path.join(parent_dir, 'fonts', 'SimHei.ttf'))
 
-Builder.load_file('ventas/ventas.kv')
+Builder.load_file(os.path.join(parent_dir,'ventas', 'ventas.kv'))
 
 from datetime import datetime, timedelta
 from sqlqueries import QueriesSQLite

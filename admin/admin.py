@@ -17,13 +17,16 @@ from sqlqueries import QueriesSQLite
 from datetime import datetime, timedelta
 import csv
 from pathlib import Path
-import os
 import platform
 
 # **注册支持中文的字体**
-LabelBase.register(name='SimHei', fn_regular='SimHei.ttf')
+import os
+# Register the custom font
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+LabelBase.register(name='SimHei', fn_regular=os.path.join(parent_dir, 'fonts', 'SimHei.ttf'))
 
-Builder.load_file('admin/admin.kv')
+Builder.load_file(os.path.join(parent_dir,'admin', 'admin.kv'))
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                  RecycleBoxLayout):
