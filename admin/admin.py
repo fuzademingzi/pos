@@ -17,13 +17,16 @@ from sqlqueries import QueriesSQLite
 from datetime import datetime, timedelta
 import csv
 from pathlib import Path
-import os
 import platform
 
 # **注册支持中文的字体**
-LabelBase.register(name='SimHei', fn_regular='SimHei.ttf')
+import os
+# Register the custom font
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+LabelBase.register(name='SimHei', fn_regular=os.path.join(parent_dir, 'fonts', 'SimHei.ttf'))
 
-Builder.load_file('admin/admin.kv')
+Builder.load_file(os.path.join(parent_dir,'admin', 'admin.kv'))
 
 class SelectableRecycleBoxLayout(FocusBehavior, LayoutSelectionBehavior,
                                  RecycleBoxLayout):
@@ -131,7 +134,7 @@ class SelectableVentaLabel(RecycleDataViewBehavior, BoxLayout):
         self.ids['_cantidad'].text = str(data['productos'])
         self.ids['_total'].text = '€ '+str("{:.2f}".format(data['total']))
         self.ids['_time'].text = str(data['fecha'].strftime("%H:%M:%S"))
-        self.ids['_date'].text = str(data['fecha'].strftime("%d/%m/%Y"))
+        self.ids['_date'].text = str(data['fecha'].strftime("%Y-%m-%d"))
         self.set_font()  # **设置字体**
         return super(SelectableVentaLabel, self).refresh_view_attrs(rv, index, data)
 
@@ -535,8 +538,8 @@ class VistaVentas(Screen):
         connection = QueriesSQLite.create_connection("pdvDB.sqlite")
         valid_input=True
         final_sum=0
-        f_inicio=datetime.strptime('01/01/00', '%d/%m/%y')
-        f_fin=datetime.strptime('31/12/2099', '%d/%m/%Y')
+        f_inicio=datetime.strptime('1970-01-01', '%Y-%m-%d')
+        f_fin=datetime.strptime('2099-12-31', '%Y-%m-%d')
 
         _ventas=[]
         _total_productos=[]
@@ -548,34 +551,39 @@ class VistaVentas(Screen):
         if choice=='Default':
             f_inicio=datetime.today().date()
             f_fin=f_inicio+timedelta(days=1)
-            self.ids.date_id.text=str(f_inicio.strftime("%d-%m-%y"))
+            self.ids.date_id.text=str(f_inicio.strftime("%Y-%m-%d"))
+            self.ids.date_id.font_name = 'SimHei'  # **设置字体**
+        elif choice=='Yesterday':
+            f_fin=datetime.today().date()
+            f_inicio=f_fin-timedelta(days=1)
+            self.ids.date_id.text=str(f_inicio.strftime("%Y-%m-%d"))
             self.ids.date_id.font_name = 'SimHei'  # **设置字体**
         elif choice=='Date':
             date=self.ids.single_date.text
             try:
-                f_elegida=datetime.strptime(date,'%d/%m/%y')
+                f_elegida=datetime.strptime(date,'%Y-%m-%d')
             except:
                 valid_input=False
             if valid_input:
                 f_inicio=f_elegida
                 f_fin=f_elegida+timedelta(days=1)
-                self.ids.date_id.text=f_elegida.strftime('%d-%m-%y')
+                self.ids.date_id.text=f_elegida.strftime('%Y-%m-%d')
                 self.ids.date_id.font_name = 'SimHei'  # **设置字体**
         else:
             if self.ids.initial_date.text:
                 initial_date=self.ids.initial_date.text
                 try:
-                    f_inicio=datetime.strptime(initial_date, '%d/%m/%y')
+                    f_inicio=datetime.strptime(initial_date, '%Y-%m-%d')
                 except:
                     valid_input=False
             if self.ids.last_date.text:
                 last_date=self.ids.last_date.text
                 try:
-                    f_fin=datetime.strptime(last_date, '%d/%m/%y')
+                    f_fin=datetime.strptime(last_date, '%Y-%m-%d')
                 except:
                     valid_input=False
             if valid_input:
-                self.ids.date_id.text=f_inicio.strftime("%d-%m-%y")+" - "+f_fin.strftime("%d-%m-%y")
+                self.ids.date_id.text=f_inicio.strftime("%Y-%m-%d")+" - "+f_fin.strftime("%Y-%m-%d")
                 self.ids.date_id.font_name = 'SimHei'  # **设置字体**
 
         if valid_input:

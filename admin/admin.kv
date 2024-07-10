@@ -392,11 +392,11 @@
 			padding: .5
 			LabelOscuro:
 				id: notificacion
-				text: 'Datos de Ventas'
-				size_hint_x: .4
+				text: '销售数据'
+				size_hint_x: .35
 			LabelOscuro:
 				text: '正在浏览: '
-				size_hint_x: .1
+				size_hint_x: .15
 			LabelOscuro:
 				id: date_id
 				size_hint_x: .2
@@ -441,7 +441,7 @@
 			TextInput:
 				id: single_date
 				multiline: False
-				hint_text: 'dd/mm/aa'
+				hint_text: '0000-00-00'
 				write_tab: False
 				on_text_validate: root.cargar_venta('Date')
 			LabelOscuro:
@@ -449,7 +449,7 @@
 			TextInput:
 				id: initial_date
 				multiline: False
-				hint_text: 'dd/mm/aa'
+				hint_text: '1970-01-01'
 				write_tab: False
 				on_text_validate: root.cargar_venta('Range')
 			LabelOscuro:
@@ -458,9 +458,12 @@
 			TextInput:
 				id: last_date
 				multiline: False
-				hint_text: 'dd/mm/aa'
+				hint_text: '2099-12-31'
 				write_tab: False
 				on_text_validate: root.cargar_venta('Range')
+			BotonOscuro:
+				text: '昨日'
+				on_release: root.cargar_venta('Yesterday')
 			BotonOscuro:
 				text: '今日'
 				on_release: root.cargar_venta('Default')

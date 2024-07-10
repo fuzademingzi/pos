@@ -11,11 +11,13 @@ from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.uix.label import Label
 from kivy.core.text import LabelBase
-
+import os
 # Register the custom font
-LabelBase.register(name='SimHei', fn_regular='SimHei.ttf')
+current_dir = os.path.dirname(os.path.realpath(__file__))
+parent_dir = os.path.dirname(current_dir)
+LabelBase.register(name='SimHei', fn_regular=os.path.join(parent_dir, 'fonts', 'SimHei.ttf'))
 
-Builder.load_file('ventas/ventas.kv')
+Builder.load_file(os.path.join(parent_dir,'ventas', 'ventas.kv'))
 
 from datetime import datetime, timedelta
 from sqlqueries import QueriesSQLite
@@ -260,7 +262,7 @@ class VentasWindow(BoxLayout):
         self.actualizar_productos = actualizar_productos_callback
 
         self.ahora = datetime.now()
-        self.ids.fecha.text = self.ahora.strftime("%d/%m/%y")
+        self.ids.fecha.text = self.ahora.strftime("%Y-%m-%d")
         self.ids.fecha.font_name = 'SimHei'
         Clock.schedule_interval(self.actualizar_hora, 1)
 
@@ -278,8 +280,10 @@ class VentasWindow(BoxLayout):
                 articulo['precio_total'] = producto[2]
                 self.agregar_producto(articulo)
                 self.ids.buscar_codigo.text = ''
+                Clock.schedule_once(self.refocus_ti)
                 break
-
+    def refocus_ti(self, *args):
+        self.ids.buscar_codigo.focus = True
     def agregar_producto_nombre(self, nombre):
         self.ids.buscar_nombre.text = ''
         popup = ProductoPorNombrePopup(nombre, self.agregar_producto)
@@ -287,14 +291,14 @@ class VentasWindow(BoxLayout):
 
     def agregar_producto(self, articulo):
         self.total += articulo['precio']
-        self.ids.sub_total.text = '$ ' + "{:.2f}".format(self.total)
+        self.ids.sub_total.text = '€ ' + "{:.2f}".format(self.total)
         self.ids.sub_total.font_name = 'SimHei'
         self.ids.rvs.agregar_articulo(articulo)
 
     def eliminar_producto(self):
         menos_precio = self.ids.rvs.eliminar_articulo()
         self.total -= menos_precio
-        self.ids.sub_total.text = '$ ' + "{:.2f}".format(self.total)
+        self.ids.sub_total.text = '€ ' + "{:.2f}".format(self.total)
         self.ids.sub_total.font_name = 'SimHei'
 
     def modificar_producto(self, cambio=True, nuevo_total=None):
@@ -302,7 +306,7 @@ class VentasWindow(BoxLayout):
             self.ids.rvs.modificar_articulo()
         else:
             self.total = nuevo_total
-            self.ids.sub_total.text = '$ ' + "{:.2f}".format(self.total)
+            self.ids.sub_total.text = '€ ' + "{:.2f}".format(self.total)
             self.ids.sub_total.font_name = 'SimHei'
 
     def actualizar_hora(self, *args):
@@ -315,11 +319,11 @@ class VentasWindow(BoxLayout):
             popup = PagarPopup(self.total, self.pagado)
             popup.open()
         else:
-            self.ids.notificacion_falla.text = 'No hay nada que pagar'
+            self.ids.notificacion_falla.text = '购物车为空'
             self.ids.notificacion_falla.font_name = 'SimHei'
 
     def pagado(self):
-        self.ids.notificacion_exito.text = 'Compra realizada con exito'
+        self.ids.notificacion_exito.text = '交易成功'
         self.ids.notificacion_exito.font_name = 'SimHei'
         self.ids.notificacion_falla.text = ''
         self.ids.total.text = "{:.2f}".format(self.total)
@@ -374,7 +378,7 @@ class VentasWindow(BoxLayout):
 
     def signout(self):
         if self.ids.rvs.data:
-            self.ids.notificacion_falla.text = 'Compra abierta'
+            self.ids.notificacion_falla.text = '收银未结束'
             self.ids.notificacion_falla.font_name = 'SimHei'
         else:
             self.parent.parent.current = 'scrn_signin'
