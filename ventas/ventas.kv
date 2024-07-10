@@ -201,12 +201,12 @@
 
 <NuevaCompraPopup>:
 	size_hint: .3, .3
-	title: '取消交易'
+	title: 'Warning!'
 	font_name: 'SimHei'
 	BoxLayout:
 		orientation: 'vertical'
 		Label: 
-			text: '继续收银?'
+			text: '终止交易?'
 			font_name: 'SimHei'
 		BoxLayout:
 			Button: 
@@ -392,7 +392,7 @@
 				BotonOscuro:
 					size_hint_y: .25
 					id: nueva_compra
-					text: '新交易'
+					text: '清空'
 					font_name: 'SimHei'
 					on_release: root.nueva_compra()
 	BoxLayout:
