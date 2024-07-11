@@ -2,7 +2,8 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.recycleview import RecycleView
 from kivy.uix.recycleview.views import RecycleDataViewBehavior
-from kivy.properties import BooleanProperty
+from kivy.properties import BooleanProperty, StringProperty
+
 from kivy.uix.recycleboxlayout import RecycleBoxLayout
 from kivy.uix.behaviors import FocusBehavior
 from kivy.uix.recycleview.layout import LayoutSelectionBehavior
@@ -220,7 +221,7 @@ class CambiarCantidadPopup(Popup):
             self.actualizar_articulo(nueva_cantidad)
             self.dismiss()
         except:
-            self.ids.notificacion_no_valido.text = 'Cantidad no valida'
+            self.ids.notificacion_no_valido.text = '数量不正确'
             self.ids.notificacion_no_valido.font_name = 'SimHei'
 
 class PagarPopup(Popup):
@@ -244,7 +245,7 @@ class PagarPopup(Popup):
                 self.ids.cambio.text = "Pago menor a cantidad a pagar"
                 self.ids.cambio.font_name = 'SimHei'
         except:
-            self.ids.cambio.text = "Pago no valido"
+            self.ids.cambio.text = "金额不正确"
             self.ids.cambio.font_name = 'SimHei'
 
 class NuevaCompraPopup(Popup):
@@ -255,6 +256,7 @@ class NuevaCompraPopup(Popup):
 
 class VentasWindow(BoxLayout):
     usuario = None
+    cliente = StringProperty('')
     def __init__(self, actualizar_productos_callback, **kwargs):
         super().__init__(**kwargs)
         self.total = 0.0
@@ -335,9 +337,10 @@ class VentasWindow(BoxLayout):
         connection = QueriesSQLite.create_connection("pdvDB.sqlite")
         actualizar = """ UPDATE productos SET cantidad=? WHERE codigo=? """
         actualizar_admin = []
-
-        venta = """ INSERT INTO ventas (total, fecha, username) VALUES (?, ?, ?) """
-        venta_tuple = (self.total, self.ahora, self.usuario['username'])
+        if self.cliente == '':
+            self.cliente = '1'
+        venta = """ INSERT INTO ventas (client, total, fecha, username) VALUES (?, ?, ?, ?) """
+        venta_tuple = (self.cliente, self.total, self.ahora, self.usuario['username'])
         venta_id = QueriesSQLite.execute_query(connection, venta, venta_tuple)
         ventas_detalle = """ INSERT INTO ventas_detalle(id_venta, precio, producto, cantidad) VALUES (?, ?, ?, ?) """
 
