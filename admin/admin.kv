@@ -63,6 +63,51 @@
     	size_hint_x: .125
     	color: (0,0,0,1)
 
+<SelectableClienteLabel>:
+    # Draw a background to indicate selection
+    canvas.before:
+        Color:
+            rgba: hex('#C9F3EF') if self.selected else hex('#F0F0F0')
+        Rectangle:
+            pos: self.pos
+            size: self.size
+    Label:
+        id: _hashtag
+        size_hint_x: .02
+        color: (0,0,0,1)
+    Label:
+        id: _client
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _name
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _tel_number
+        size_hint_x: .08
+        color: (0,0,0,1)
+    Label:
+        id: _email
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _address
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _city
+        size_hint_x: .05
+        color: (0,0,0,1)
+    Label:
+        id: _birth_date
+        size_hint_x: .10
+        color: (0,0,0,1)
+    Label:
+        id: _observations
+        size_hint_x: .10
+        color: (0,0,0,1)
+
 <SelectableUsuarioLabel>:
     # Draw a background to indicate selection
     canvas.before:
@@ -101,11 +146,15 @@
         color: (0,0,0,1)
     Label:
         id: _username
-        size_hint_x: .2
+        size_hint_x: .15
+        color: (0,0,0,1)
+    Label:
+        id: _client
+        size_hint_x: .15
         color: (0,0,0,1)
     Label:
         id: _cantidad
-        size_hint_x: .2
+        size_hint_x: .1
         color: (0,0,0,1)
     Label:
         id: _total
@@ -415,11 +464,14 @@
 				text: '#'
 				size_hint_x: .05
 			LabelOscuro:
-				text: '用户名'
-				size_hint_x: .2
+				text: '员工名'
+				size_hint_x: .15
 			LabelOscuro:
-				text: '已售'
-				size_hint_x: .2
+				text: '客户编号'
+				size_hint_x: .15
+			LabelOscuro:
+				text: '件数'
+				size_hint_x: .1
 			LabelOscuro:
 				text: '总计'
 				size_hint_x: .15
@@ -473,7 +525,134 @@
 			BotonOscuro:
 				text: '导出为表格'
 				on_release: root.crear_csv()
+<VistaClientes>:
+    name: 'Clientes'
+    BoxLayout:
+        BoxLayout:
+            padding: .5
+            orientation: 'vertical'
+            BoxLayout:
+                size_hint_y: .05
+                spacing: .5
+                LabelOscuro:
+                    text: '#'
+                    size_hint_x: .02
+                LabelOscuro:
+                    text: '客户ID'
+                    size_hint_x: .05
+                LabelOscuro:
+                    text: '姓名'
+                    size_hint_x: .05
+                LabelOscuro:
+                    text: '电话'
+                    size_hint_x: .08
+                LabelOscuro:
+                    text: '邮箱'
+                    size_hint_x: .15
+                LabelOscuro:
+                    text: '地址'
+                    size_hint_x: .15
+                LabelOscuro:
+                    text: '邮编'
+                    size_hint_x: .05
+                LabelOscuro:
+                    text: '出生日期'
+                    size_hint_x: .10
+                LabelOscuro:
+                    text: '备注'
+                    size_hint_x: .10
+            AdminRV:
+                id: rv_clientes
+                size_hint_y: .89
+                viewclass: 'SelectableClienteLabel'
+        BoxLayout:
+            spacing: .5
+            size_hint_x: .2
+            orientation: 'vertical'
+            padding: .5
+            BotonOscuro:
+                text: '添加客户'
+                on_release: root.agregar_cliente()
+            BotonOscuro:
+                text: '修改客户'
+                on_release: root.modificar_cliente()
+            BotonOscuro:
+                text: '删除客户'
+                on_release: root.eliminar_cliente()
 
+<ClientePopup>:
+    size_hint: .5, .5
+    auto_dismiss: False
+    title: ''
+    BoxLayout:
+        orientation: 'vertical'
+        padding: .05
+        BoxLayout:
+            size_hint_y: .1
+            Label:
+                id: cliente_info_1
+        Label:
+            id: no_valid_notif
+            size_hint_y: .1
+        TextInput:
+            size_hint_y: .1
+            id: cliente_id
+            multiline: False
+            hint_text: '客户ID'
+            write_tab: False
+        TextInput:
+            size_hint_y: .1
+            id: cliente_nombre
+            multiline: False
+            hint_text: '姓名'
+            write_tab: False
+        TextInput:
+            size_hint_y: .1
+            id: cliente_telefono
+            multiline: False
+            hint_text: '电话'
+            write_tab: False
+        TextInput:
+            size_hint_y: .1
+            id: cliente_email
+            multiline: False
+            hint_text: '邮箱'
+            write_tab: False
+        TextInput:
+            size_hint_y: .1
+            id: cliente_direccion
+            multiline: False
+            hint_text: '地址'
+            write_tab: False
+        TextInput:
+            size_hint_y: .1
+            id: cliente_ciudad
+            multiline: False
+            hint_text: '邮编'
+            write_tab: False
+        TextInput:
+            size_hint_y: .1
+            id: cliente_fecha_nacimiento
+            multiline: False
+            hint_text: '出生日期'
+            write_tab: False
+        TextInput:
+            size_hint_y: .1
+            id: cliente_observaciones
+            multiline: False
+            hint_text: '备注'
+            write_tab: False
+        BoxLayout:
+            size_hint_y: .2
+            Button:
+                text: '确认'
+                on_release:
+                    root.verificar(cliente_id.text, cliente_nombre.text, cliente_telefono.text,
+                    cliente_email.text, cliente_direccion.text, cliente_ciudad.text,
+                    cliente_fecha_nacimiento.text, cliente_observaciones.text)
+            Button:
+                text: '放弃更改并退出'
+                on_press: root.dismiss()
 
 <CustomDropDown>:
 	canvas.before:
@@ -494,6 +673,11 @@
         on_release: root.vista(self.text)
     Button:
         text: '销售记录'
+        size_hint_y: None
+        height: 44
+        on_release: root.vista(self.text)
+    Button:
+        text: '客户管理'
         size_hint_y: None
         height: 44
         on_release: root.vista(self.text)
@@ -550,6 +734,8 @@
 				pos: self.pos
 		VistaProductos:	
 			id: vista_productos
+		VistaClientes:
+			id: vista_clientes
 		VistaUsuarios:
 			id: vista_usuarios
 		VistaVentas:

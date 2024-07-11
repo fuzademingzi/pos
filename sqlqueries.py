@@ -56,12 +56,28 @@ class QueriesSQLite:
         );
         """
 
+        tabla_clients = """
+        CREATE TABLE IF NOT EXISTS clients(
+         client TEXT PRIMARY KEY, 
+         name TEXT NOT NULL, 
+         tel_number TEXT NOT NULL,
+         email TEXT NOT NULL,
+         address TEXT NOT NULL,
+         city TEXT NOT NULL,
+         birth_date TEXT NOT NULL,
+         observations TEXT NOT NULL
+        );
+        """
+
+
         tabla_ventas = """
         CREATE TABLE IF NOT EXISTS ventas(
          id INTEGER PRIMARY KEY, 
          total REAL NOT NULL, 
          fecha TIMESTAMP,
-         username TEXT  NOT NULL, 
+         username TEXT  NOT NULL,
+         client TEXT NOT NULL,
+         FOREIGN KEY(client) REFERENCES clients(client)
          FOREIGN KEY(username) REFERENCES usuarios(username)
         );
         """
@@ -80,7 +96,8 @@ class QueriesSQLite:
 
         QueriesSQLite.execute_query(connection, tabla_productos, tuple()) 
         QueriesSQLite.execute_query(connection, tabla_usuarios, tuple()) 
-        QueriesSQLite.execute_query(connection, tabla_ventas, tuple()) 
+        QueriesSQLite.execute_query(connection, tabla_clients, tuple())
+        QueriesSQLite.execute_query(connection, tabla_ventas, tuple())
         QueriesSQLite.execute_query(connection, tabla_ventas_detalle, tuple()) 
 
 

@@ -227,6 +227,7 @@
 			size: self.size
 			pos: self.pos
 	orientation: 'vertical'
+	cliente: cliente_input.text
 	BoxLayout:
 		size_hint_y: .1
 		spacing: .5
@@ -383,6 +384,13 @@
 					id: notificacion_exito
 					size_hint_y: .25
 					color: hex('#039B1E')
+				TextInput:
+                    id: cliente_input
+                    multiline: False
+                    text: ''
+                    hint_text: '客户ID'
+                    font_name: 'SimHei'
+                    size_hint_y: .1
 				BotonOscuro:
 					size_hint_y: .25
 					id: pagar
