@@ -2,7 +2,9 @@ from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.lang import Builder
 from kivy.core.text import LabelBase
-
+from kivy.config import Config
+Config.set('graphics', 'width', '1200')
+Config.set('graphics', 'height', '900')
 from sqlqueries import QueriesSQLite
 
 # **注册支持中文的字体**
